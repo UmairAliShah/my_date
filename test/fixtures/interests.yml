@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  romance: false
+  parties: false
+  selfies: false
+  fashion: false
+  movies: false
+  music: false
+  sports: false
+  travelling: false
+  culture: false
+  news: false
+  user: one
+
+two:
+  romance: false
+  parties: false
+  selfies: false
+  fashion: false
+  movies: false
+  music: false
+  sports: false
+  travelling: false
+  culture: false
+  news: false
+  user: two

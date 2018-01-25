@@ -118,12 +118,12 @@ end
   end
 
   def distance
-    @debugger
+    #debugger
     begin
       @user = User.find_by_authentication_token(params[:user_token])
       if @user && @user.profile != nil
         params[:id] = @user.id
-        @all_users = User.where("id != '#{params[:id]}'")
+        @all_users = Profile.where("user_id != '#{params[:id]}'")
         if params[:distance] == 5
           render json: @all_users.as_json()
         else
@@ -131,9 +131,10 @@ end
           long1 = @user.profile.longitude
           @id_arrays = []#Array.new{[]}
           @filter_users = []#Array.new{[]}
+
           @all_users.each do |u|
             #@distance = 10
-
+            p = u
             @distance  = Geocoder::Calculations.distance_between([lat1,long1], [lat1,long1])
             @distance = Geocoder::Calculations.to_kilometers(@distance)
             if @distance > 0 && @distance <= 500 && params[:distance] == 4

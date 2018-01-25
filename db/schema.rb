@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180125151958) do
+ActiveRecord::Schema.define(version: 20180125151959) do
+
+  create_table "interests", force: :cascade do |t|
+    t.boolean "romance"
+    t.boolean "parties"
+    t.boolean "selfies"
+    t.boolean "fashion"
+    t.boolean "movies"
+    t.boolean "music"
+    t.boolean "sports"
+    t.boolean "travelling"
+    t.boolean "culture"
+    t.boolean "news"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_interests_on_user_id"
+  end
 
   create_table "profiles", force: :cascade do |t|
     t.string "first_name"

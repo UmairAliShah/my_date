@@ -14,6 +14,11 @@ Rails.application.routes.draw do
           post :distance
          end
        end
+       resources :interests, :only => [:create] do
+         collection do
+           post :search_people_via_interests
+         end
+       end
      end
   end
 end

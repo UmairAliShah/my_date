@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_one :profile
+  has_one :interest
   acts_as_token_authenticatable
 
   # Include default devise modules. Others available are:
