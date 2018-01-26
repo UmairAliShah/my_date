@@ -133,23 +133,31 @@ end
           @filter_users = []#Array.new{[]}
 
           @all_users.each do |u|
-            #@distance = 10
-            p = u
-            @distance  = Geocoder::Calculations.distance_between([lat1,long1], [lat1,long1])
+
+            @distance  = Geocoder::Calculations.distance_between([lat1,long1], [u.latitude,u.longitude])
             @distance = Geocoder::Calculations.to_kilometers(@distance)
             if @distance > 0 && @distance <= 500 && params[:distance] == 4
-              @id_arrays << u.id
+              @id_arrays << u.user.id
             elsif @distance > 0 && @distance <= 300 && params[:distance] == 3
-              @id_arrays << u.id
+              @id_arrays << u.user.id
             elsif @distance > 0 && @distance <= 100 && params[:distance] == 2
-              @id_arrays << u.id
+              @id_arrays << u.user.id
             elsif @distance > 0 && @distance <= 50 && params[:distance] == 1
-              @id_arrays << u.id
+              @id_arrays << u.user.id
             elsif @distance > 0 && @distance <= 20 && params[:distance] == 0
-              @id_arrays << u.id
+              @id_arrays << u.user.id
             end
           end
-          render json: @distance.as_json()
+
+          if @id_arrays != nil
+              @id_arrays.each do |i|
+                @single_filter_user = Profile.where("user_id == #{i}")
+                @filter_users << @single_filter_user
+              end
+            render json: @filter_users.as_json(), status: :Filter_Users
+          else
+            rener json: "0", status: :Users_Not_Exists
+          end
         end
       else
         render json: "-1"

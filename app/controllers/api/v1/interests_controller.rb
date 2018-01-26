@@ -40,12 +40,21 @@ class Api::V1::InterestsController < ApplicationController
                params[:travelling] == u.travelling ||
                params[:culture] == u.culture ||
                params[:news]    == u.news
-
                @id_arrays << u.user.id
             else
+
             end
          end
-         render json: @id_arrays
+
+         if @id_arrays != nil
+             @id_arrays.each do |i|
+               @single_filter_user = Profile.where("user_id == #{i}")
+               @filter_users << @single_filter_user
+             end
+             render json: @filter_users.as_json(), status: :Filter_Users
+         else
+             rener json: "0", status: :Users_Not_Exists
+         end
       else
         render json: "-1", status: :User_Not_Found
       end
