@@ -9,7 +9,14 @@ class Api::V1::SessionsController < ApplicationController
       if @user && @user.valid_password?(user_password)
         @user.authentication_token = nil
         @user.save
-        render json: @user.as_json()
+        @user_profile = @user.profile
+        if @user.profile != nil
+           render json:  { :user => @user.as_json(:except => [:id, :email, :created_at, :updated_at]), :user_profile => @user_profile.as_json(:except => [:created_at, :updated_at]) }
+        else
+           render json:  "0", status: :Profile_Not_Exists
+        end
+        #render json: @user.as_json(:except => [:id, :email, :created_at, :updated_at])
+
       else
         render json: "-1"
       end

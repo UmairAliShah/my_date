@@ -63,6 +63,102 @@ class Api::V1::InterestsController < ApplicationController
     end
   end
 
+  def match_people_via_interests
+    #debugger
+    begin
+       @user = User.find_by_authentication_token(params[:user_token])
+       if @user && @user.profile != nil && @user.interest != nil
+          params[:user_gender] = @user.profile.gender
+          @opposite_gender_users = Profile.where("gender != '#{params[:user_gender]}'")
+          @id_arrays = []
+          @filter_users = []
+          count = 0
+          @opposite_gender_users.each do |u|
+             if params[:romance] == u.romance
+                count++
+                if params[:parties] == u.parties
+                  count++
+                  if params[:selfies] == u.selfies
+                     count++
+                     if params[:fashion] == u.fashion
+                        count++
+                        if params[:movies]  == u.movies
+                           count++
+                           if params[:music]   == u.music
+                              count++
+                              if params[:sports]  == u.sports
+                                 count++
+                                 if params[:travelling] == u.travelling
+                                    count++
+                                    if params[:culture] == u.culture
+                                       count++
+                                       if params[:news] == u.news
+                                          count++
+                                       elsif
+                                       end
+                                    elsif
+                                    end
+                                 elsif
+                                 end
+                              elsif
+                              end
+                           elsif
+                           end
+                        elsif
+                        end
+                     elsif
+                     end
+                  elsif
+                  end
+                elsif
+                end
+             elsif params[:romance] != u.romance
+                   if params[:parties] == u.parties
+                      count++
+                      if params[:selfies] == u.selfies
+                         count++
+                         if params[:fashion] == u.fashion
+                            count++
+                            if params[:movies]  == u.movies
+                               count++
+                              if params[:music] == u.music
+                                 count++
+                                 if params[:sports]  == u.sports
+                                    count++
+                                    if params[:travelling] == u.travelling
+                                       count++
+                                       if params[:culture] == u.culture
+                                          count++
+                                          if params[:news] == u.news
+                                             count++
+                                          elsif params[:news] != u.news
+                                          end
+                                       elsif params[:culture] != u.culture
+                                       end
+                                    elsif params[:travelling] != u.travelling
+                                    end
+                                 elsif params[:sports] != u.sports
+                                 end
+                              elsif params[:music] != u.music
+                              end
+                            elsif params[:movies]  != u.movies
+                            end
+                         elsif params[:fashion] != u.fashion
+                         end
+                      elsif params[:selfies] != u.selfies
+                      end
+                   elsif params[:parties] != u.parties
+                   end
+             end
+          end
+       else
+         render json: "-1", status: :User_Not_Found
+       end
+    rescue
+       render json: "-2", status: :Exception
+    end
+  end
+
   private
   def set_user_interest
      params.require(:interest).permit(:romance, :parties, :selfies, :fashion, :movies, :music, :sports, :travelling, :culture, :news)
