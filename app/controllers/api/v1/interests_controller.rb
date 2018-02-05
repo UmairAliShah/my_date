@@ -64,93 +64,74 @@ class Api::V1::InterestsController < ApplicationController
   end
 
   def match_people_via_interests
-    #debugger
     begin
        @user = User.find_by_authentication_token(params[:user_token])
        if @user && @user.profile != nil && @user.interest != nil
-          params[:user_gender] = @user.profile.gender
-          @opposite_gender_users = Profile.where("gender != '#{params[:user_gender]}'")
-          @id_arrays = []
-          @filter_users = []
+         @current_user_interests = @user.interest
+         params[:user_gender] = @user.profile.gender
+         @opposite_gender_users = Profile.where("gender != '#{params[:user_gender]}'")
+         @users_interests = []
+         @id_arrays = []
+
+
+         @opposite_gender_users.each do |u|
+            params[:user_id] = u.user_id
+            @single_user_interest = Interest.where("user_id == '#{params[:user_id]}'").first
+            @users_interests << @single_user_interest
+         end
+
+        @users_interests.each do |u|
           count = 0
-          @opposite_gender_users.each do |u|
-             if params[:romance] == u.romance
-                count++
-                if params[:parties] == u.parties
-                  count++
-                  if params[:selfies] == u.selfies
-                     count++
-                     if params[:fashion] == u.fashion
-                        count++
-                        if params[:movies]  == u.movies
-                           count++
-                           if params[:music]   == u.music
-                              count++
-                              if params[:sports]  == u.sports
-                                 count++
-                                 if params[:travelling] == u.travelling
-                                    count++
-                                    if params[:culture] == u.culture
-                                       count++
-                                       if params[:news] == u.news
-                                          count++
-                                       elsif
-                                       end
-                                    elsif
-                                    end
-                                 elsif
-                                 end
-                              elsif
-                              end
-                           elsif
-                           end
-                        elsif
-                        end
-                     elsif
-                     end
-                  elsif
-                  end
-                elsif
-                end
-             elsif params[:romance] != u.romance
-                   if params[:parties] == u.parties
-                      count++
-                      if params[:selfies] == u.selfies
-                         count++
-                         if params[:fashion] == u.fashion
-                            count++
-                            if params[:movies]  == u.movies
-                               count++
-                              if params[:music] == u.music
-                                 count++
-                                 if params[:sports]  == u.sports
-                                    count++
-                                    if params[:travelling] == u.travelling
-                                       count++
-                                       if params[:culture] == u.culture
-                                          count++
-                                          if params[:news] == u.news
-                                             count++
-                                          elsif params[:news] != u.news
-                                          end
-                                       elsif params[:culture] != u.culture
-                                       end
-                                    elsif params[:travelling] != u.travelling
-                                    end
-                                 elsif params[:sports] != u.sports
-                                 end
-                              elsif params[:music] != u.music
-                              end
-                            elsif params[:movies]  != u.movies
-                            end
-                         elsif params[:fashion] != u.fashion
-                         end
-                      elsif params[:selfies] != u.selfies
-                      end
-                   elsif params[:parties] != u.parties
-                   end
-             end
+          if @current_user_interests.romance == u.romance
+             count += 1
           end
+          if @current_user_interests.parties == u.parties
+             count += 1
+          end
+          if @current_user_interests.selfies == u.selfies
+             count += 1
+          end
+          if @current_user_interests.fashion == u.fashion
+             count += 1
+          end
+          if @current_user_interests.movies == u.movies
+             count += 1
+          end
+          if @current_user_interests.music == u.music
+             count += 1
+          end
+          if @current_user_interests.sports == u.sports
+             count += 1
+          end
+          if @current_user_interests.travelling == u.travelling
+             count += 1
+          end
+          if @current_user_interests.culture == u.culture
+             count += 1
+          end
+          if @current_user_interests.news == u.news
+             count += 1
+          end
+
+          if count > 4
+             @id_arrays << u.user.id
+          end
+        end
+
+        @all_filter_users = []
+        @all_filter_users_profiles = []
+        if @id_arrays != nil
+           @id_arrays.each do |u|
+              @single_filter_user = User.where("id == '#{u}'").first
+              @all_filter_users << @single_filter_user
+              @single_filter_user_profile = Profile.where("user_id == '#{u}'").first
+              @all_filter_users_profiles << @single_filter_user_profile
+           end
+
+           render json: { :users => @all_filter_users.as_json(:except => [:authentication_token, :email, :created_at, :updated_at]), :users_profiles => @all_filter_users_profiles.as_json(:except => [:created_at, :updated_at]) }
+        else
+           render json: "0", status: :Profiles_Not_Matched
+        end
        else
          render json: "-1", status: :User_Not_Found
        end

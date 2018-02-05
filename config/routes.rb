@@ -17,7 +17,7 @@ Rails.application.routes.draw do
        resources :interests, :only => [:create] do
          collection do
            post :search_people_via_interests
-           post :match_people_via_interests
+           get :match_people_via_interests
          end
        end
      end
